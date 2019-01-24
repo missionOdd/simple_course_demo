@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.User">
+        <id column="user_id" property="userId" />
+        <result column="username" property="username" />
+        <result column="password" property="password" />
+        <result column="email" property="email" />
+        <result column="role" property="role" />
+        <result column="permission" property="permission" />
+        <result column="last_login_time" property="lastLoginTime" />
+        <result column="create_time" property="createTime" />
+        <result column="thumb_id" property="thumbId" />
+        <result column="user_status" property="userStatus" />
+        <result column="version" property="version" />
+        <association property="thumb" resultMap="com.mission.course.dao.ThumbMapper.BaseResultMap"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        user_id, username, password, email, role, permission, last_login_time, create_time, thumb_id, user_status, version
+    </sql>
+
+    <sql id="T_Column_List">
+        u.user_id, u.username, u.password, u.email, u.role, u.permission, u.last_login_time, u.create_time, u.thumb_id, u.user_status, u.version
+    </sql>
+
+    <sql id="LESS_Column_List">
+        u.user_id, u.username, u.email, u.role, u.last_login_time,u.user_status, u.thumb_id
+    </sql>
+
+    <!--逻辑删除状态必为1-->
+    <sql id="Status_Valid">
+        and  u.user_status = 1
+    </sql>
+
+    <select id="getOneUser" resultType="com.mission.course.entity.User">
+        select
+        <include refid="LESS_Column_List"/>
+        from tb_user u
+        where u.user_id=#{userId}
+        <include refid="Status_Valid"/>
+    </select>
+
+
+</mapper>

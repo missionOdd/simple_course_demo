@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.ThumbCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.ThumbCategory">
+        <id column="thumb_category_id" property="thumbCategoryId" />
+        <result column="thumb_category_name" property="thumbCategoryName" />
+        <result column="thumb_category_desc" property="thumbCategoryDesc" />
+        <result column="thumb_category_status" property="thumbCategoryStatus" />
+        <result column="thumb_category_src" property="thumbCategorySrc" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        thumb_category_id, thumb_category_name, thumb_category_desc,thumb_category_status,thumb_category_src
+    </sql>
+
+    <sql id="T_Column_List">
+        tc.thumb_category_id, tc.thumb_category_name, tc.thumb_category_desc, tc.thumb_category_src
+    </sql>
+
+</mapper>

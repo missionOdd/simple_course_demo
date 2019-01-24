@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.VisitMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.Visit">
+        <id column="visit_id" property="visitId" />
+        <result column="post_id" property="postId" />
+        <result column="notice_id" property="noticeId" />
+        <result column="video_id" property="videoId" />
+        <result column="visit_ip" property="visitIp" />
+        <result column="visit_like" property="visitLike" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        visit_id, post_id, notice_id, visit_ip, visit_like, create_time,video_id
+    </sql>
+
+    <sql id="T_Column_List">
+        v.visit_id, v.post_id, v.notice_id, v.visit_ip, v.visit_like, v.create_time,v.video_id
+    </sql>
+
+</mapper>

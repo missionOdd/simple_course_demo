@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.PostMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.Post">
+        <id column="post_id" property="postId" />
+        <result column="post_title" property="postTitle" />
+        <result column="post_priority" property="priority" />
+        <result column="post_category_id" property="postCategoryId" />
+        <result column="post_status" property="postStatus" />
+        <result column="post_last_edit_time" property="lastEditTime" />
+        <result column="post_create_time" property="createTime" />
+        <result column="post_summary" property="postSummary" />
+        <result column="thumb_id" property="thumbId" />
+        <result column="post_version" property="version" />
+        <result column="user_id" property="userId" />
+        <association property="postCategory" resultMap="com.mission.course.dao.PostCategoryMapper.BaseResultMap"/>
+        <association property="thumb" resultMap="com.mission.course.dao.ThumbMapper.BaseResultMap"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        post_id, post_title, priority, post_category_id, post_status, last_edit_time, create_time, post_summary, thumb_id, version,user_id
+    </sql>
+
+    <sql id="T_Column_List">
+        p.post_id, p.post_title, p.priority as post_priority, p.post_category_id, p.post_status, p.last_edit_time as post_last_edit_time, p.create_time as post_create_time, p.post_summary, p.thumb_id, p.version as post_version,p.user_id
+    </sql>
+
+
+    <!--逻辑删除状态必为1-->
+    <sql id="Status_Valid">
+        and  p.post_status = 1
+    </sql>
+    <select id="getPostList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="T_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.ThumbMapper.LESS_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.PostCategoryMapper.T_Column_List"/>
+        from tb_post_category pc,tb_post p
+        left join tb_thumb t
+        on  p.thumb_id = t.thumb_id
+        <where>
+            p.post_category_id =pc.post_category_id
+            <if test="post!=null">
+                <if test="post.postId!=null">
+                    and p.post_id =#{post.postId}
+                </if>
+                <if test="post.postCategoryId!=null">
+                    and p.post_category_id = #{post.postCategoryId}
+                </if>
+                <if test="post.userId!=null">
+                    and p.user_id = #{post.userId}
+                </if>
+                <if test="post.postTitle!=null">
+                    and p.post_title like '%${post.postTitle}%'
+                </if>
+            </if>
+            <include refid="Status_Valid"/>
+        </where>
+        <choose>
+            <when test="post!=null and post.priority==-1">
+                order by p.create_time desc
+            </when>
+            <otherwise>
+                order by p.priority desc
+            </otherwise>
+        </choose>
+
+    </select>
+
+
+</mapper>

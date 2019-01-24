@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.FileCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.FileCategory">
+        <id column="file_category_id" property="fileCategoryId" />
+        <result column="file_category_name" property="fileCategoryName" />
+        <result column="file_category_desc" property="fileCategoryDesc" />
+        <result column="file_category_status" property="fileCategoryStatus" />
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        file_category_id, file_category_name, file_category_desc, file_category_status
+    </sql>
+
+    <sql id="T_Column_List">
+        fc.file_category_id, fc.file_category_name, fc.file_category_desc, fc.file_category_status
+    </sql>
+
+    <!--逻辑删除值数必为1-->
+    <sql id="Status_Valid">
+        and fc.file_category_status = 1
+    </sql>
+
+</mapper>

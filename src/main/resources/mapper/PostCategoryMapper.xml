@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.PostCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.PostCategory">
+        <id column="post_category_id" property="postCategoryId" />
+        <result column="post_category_name" property="postCategoryName" />
+        <result column="post_category_desc" property="postCategoryDesc" />
+        <result column="post_category_status" property="postCategoryStatus" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        post_category_id, post_category_name, post_category_desc, post_category_status
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="T_Column_List">
+        pc.post_category_id, pc.post_category_name, pc.post_category_desc, pc.post_category_status
+    </sql>
+
+
+    <!--逻辑删除状态必为1-->
+    <sql id="Status_Valid">
+        and  pc.post_category_status = 1
+    </sql>
+
+</mapper>

@@ -1,0 +1,68 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.NoticeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.Notice">
+        <id column="notice_id" property="noticeId" />
+        <result column="notice_title" property="noticeTitle" />
+        <result column="user_id" property="userId" />
+        <result column="notice_content" property="noticeContent" />
+        <result column="last_edit_time" property="lastEditTime" />
+        <result column="priority" property="priority" />
+        <result column="create_time" property="createTime" />
+        <result column="notice_status" property="noticeStatus" />
+        <result column="thumb_id" property="thumbId" />
+        <result column="version" property="version" />
+        <association property="user" column="user_id" resultMap="com.mission.course.dao.UserMapper.BaseResultMap"/>
+        <association property="thumb" column="thumb_id" resultMap="com.mission.course.dao.ThumbMapper.BaseResultMap"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        notice_id, notice_title, user_id, notice_content, last_edit_time, priority, create_time, notice_status, thumb_id, version
+    </sql>
+
+    <sql id="T_Column_List">
+        n.notice_id, n.notice_title, n.user_id, n.notice_content, n.last_edit_time, n.priority, n.create_time, n.notice_status, n.thumb_id, n.version
+    </sql>
+
+    <!--逻辑删除状态必为1-->
+    <sql id="Status_Valid">
+        and n.notice_status = 1
+    </sql>
+
+    <select id="getNoticeList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="T_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.ThumbMapper.LESS_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.UserMapper.LESS_Column_List"/>
+        from
+        tb_user u, tb_notice n left join tb_thumb t on  n.thumb_id = t.thumb_id
+        <where>
+            n.user_id = u.user_id
+
+            <if test="notice!=null">
+                <if test="notice.noticeId!=null">
+                    and n.notice_id = #{notice.noticeId}
+                </if>
+                <if test="notice.userId!=null">
+                    and n.user_id = #{notice.userId}
+                </if>
+            </if>
+            <include refid="Status_Valid"/>
+            <include refid="com.mission.course.dao.UserMapper.Status_Valid"/>
+        </where>
+    <choose>
+        <when test="notice!=null and notice.priority==-1">
+            order by n.create_time desc
+        </when>
+        <otherwise>
+            order by n.priority desc
+        </otherwise>
+    </choose>
+    </select>
+
+
+</mapper>

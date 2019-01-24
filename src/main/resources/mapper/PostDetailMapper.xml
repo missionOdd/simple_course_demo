@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.PostDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.PostDetail">
+        <id column="post_id" property="postId" />
+        <result column="user_id" property="userId" />
+        <result column="post_status" property="postStatus" />
+        <result column="post_content" property="postContent" />
+        <result column="version" property="version" />
+        <association column="user_id" property="user" resultMap="com.mission.course.dao.UserMapper.BaseResultMap"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        post_id, user_id, post_status, post_content, version
+    </sql>
+
+    <sql id="T_Column_List">
+        pd.post_id, pd.user_id, pd.post_status, pd.post_content, pd.version
+    </sql>
+    <!--逻辑删除状态必为1-->
+    <sql id="Status_Valid">
+        and  pd.post_status = 1
+    </sql>
+    <select id="getPostDetail" resultMap="BaseResultMap">
+        SELECT
+        <include refid="T_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.UserMapper.LESS_Column_List"/>
+        from tb_post_detail pd left join tb_user u
+        on pd.user_id = u.user_id
+        <where>
+        <if test="postDetail!=null">
+            <if test="postDetail.postId!=null"/>
+            pd.post_id =#{postDetail.postId}
+        </if>
+       <include refid="Status_Valid"/>
+        </where>
+    </select>
+
+
+</mapper>

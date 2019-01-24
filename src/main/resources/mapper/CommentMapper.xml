@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.CommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.Comment">
+        <id column="comment_id" property="commentId" />
+        <result column="user_id" property="userId"/>
+        <result column="post_id" property="postId" />
+        <result column="notice_id" property="noticeId" />
+        <result column="video_id" property="videoId" />
+        <result column="messages" property="messages" />
+        <result column="level" property="level" />
+        <result column="parent_id" property="parentId" />
+        <result column="comment_create_time" property="createTime" />
+        <result column="comment_status" property="commentStatus" />
+        <association property="user" column="user_id" resultMap="com.mission.course.dao.UserMapper.BaseResultMap"/>
+        <collection property="children" column="comment_id"  select="getChildrenList"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        comment_id, user_id, post_id, messages, level, parent_id, create_time, comment_status,notice_id,video_id
+    </sql>
+
+    <sql id="T_Column_List">
+        c.comment_id, c.user_id, c.post_id, c.messages, c.level,c.parent_id, c.create_time as comment_create_time, c.comment_status,c.notice_id,c.video_id
+    </sql>
+
+    <sql id="LESS_Column_List">
+        c.comment_id,  c.messages, c.level,c.parent_id, c.create_time as comment_create_time
+    </sql>
+
+    <!--逻辑删除值数必为1-->
+    <sql id="Status_Valid">
+        and c.comment_status = 1
+    </sql>
+
+
+    <select id="getCommentList" resultMap="BaseResultMap">
+        select
+        <include refid="LESS_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.UserMapper.LESS_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.ThumbMapper.LESS_Column_List"/>
+        from
+        tb_comment c,tb_user u left join tb_thumb t
+         on u.thumb_id = t.thumb_id
+        <where>
+          c.user_id = u.user_id
+          and c.parent_id is null
+          <if test="comment!=null">
+              <if test="comment.commentId!=null">
+                  and c.comment_id = #{comment.commentId}
+              </if>
+              <if test="comment.postId!=null">
+                  and c.post_id =#{comment.postId}
+              </if>
+              <if test="comment.noticeId!=null">
+                  and c.notice_id =#{comment.noticeId}
+              </if>
+              <if test="comment.videoId!=null">
+                  and c.video_id =#{comment.videoId}
+              </if>
+              <if test="comment.userId!=null">
+                  and c.user_id =#{comment.userId}
+              </if>
+          </if>
+            <include refid="Status_Valid"/>
+            <include refid="com.mission.course.dao.UserMapper.Status_Valid"/>
+        </where>
+        order by c.level asc
+    </select>
+
+
+    <select id="getChildrenList" resultMap="BaseResultMap">
+        select
+        <include refid="LESS_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.UserMapper.LESS_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.ThumbMapper.LESS_Column_List"/>
+        from
+        tb_comment c,tb_user u left join tb_thumb t
+        on u.thumb_id = t.thumb_id
+        <where>
+            c.user_id = u.user_id
+            and c.parent_id =#{id}
+            <include refid="Status_Valid"/>
+            <include refid="com.mission.course.dao.UserMapper.Status_Valid"/>
+        </where>
+        order by c.level asc
+    </select>
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.FileTypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.FileType">
+        <id column="file_type_id" property="fileTypeId" />
+        <result column="file_type_name" property="fileTypeName" />
+        <result column="file_type_desc" property="fileTypeDesc" />
+        <result column="file_type_status" property="fileTypeStatus" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        file_type_id, file_type_name, file_type_desc,file_type_status
+    </sql>
+
+    <sql id="T_Column_List">
+        ft.file_type_id,ft.file_type_name,ft.file_type_desc
+    </sql>
+</mapper>

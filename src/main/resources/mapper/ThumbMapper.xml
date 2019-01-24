@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.ThumbMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.Thumb">
+        <id column="thumb_id" property="thumbId" />
+        <result column="thumb_name" property="thumbName" />
+        <result column="thumb_size" property="thumbSize" />
+        <result column="priority" property="priority" />
+        <result column="thumb_category_id" property="thumbCategoryId" />
+        <result column="thumb_desc" property="thumbDesc" />
+        <result column="parent_id" property="parentId" />
+        <result column="thumb_src" property="thumbSrc" />
+        <result column="thumb_status" property="thumbStatus" />
+        <result column="create_time" property="createTime" />
+        <association column="thumb_category_id" property="thumbCategory" resultMap="com.mission.course.dao.ThumbCategoryMapper.BaseResultMap" />
+        <association property="parent" column="parent_id" javaType="com.mission.course.entity.Thumb" select="selectParent"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        thumb_id, thumb_name, thumb_size, priority, thumb_category_id, thumb_desc, parent_id, thumb_src, thumb_status, create_time
+    </sql>
+
+    <sql id="T_Column_List">
+        t.thumb_id, t.thumb_name, t.thumb_size, t.priority, t.thumb_category_id, t.thumb_desc, t.parent_id, t.thumb_src, t.thumb_status, t.create_time
+    </sql>
+
+    <sql id="LESS_Column_List">
+        t.thumb_id, t.thumb_name, t.thumb_size,t.thumb_category_id, t.thumb_desc, t.parent_id, t.thumb_src,t.thumb_status,t.create_time
+    </sql>
+
+
+    <!--逻辑删除状态必为1-->
+    <sql id="Status_Valid">
+        and  t.thumb_status = 1
+    </sql>
+
+    <select id="getThumbList" resultMap="BaseResultMap">
+        select
+        <include refid="LESS_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.ThumbCategoryMapper.T_Column_List"/>
+        from tb_thumb t left join tb_thumb_category tc on t.thumb_category_id =tc.thumb_category_id
+        <where>
+            1=1
+            <include refid="Status_Valid"/>
+            <if test="thumb!=null">
+            <if test="thumb.thumbId!=null">
+                and t.thumb_id =#{thumb.thumbId}
+            </if>
+            <if test="thumb.thumbCategoryId!=null">
+                and t.thumb_category_id = #{thumb.thumbCategoryId}
+            </if>
+            <if test="thumb.parentId!=null">
+                and t.parent_id is not null
+            </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectParent" resultType="com.mission.course.entity.Thumb" >
+        select
+        <include refid="LESS_Column_List"/>
+        from tb_thumb t
+        where t.thumb_id =#{id}
+        <include refid="Status_Valid"/>
+    </select>
+
+</mapper>

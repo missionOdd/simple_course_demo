@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mission.course.dao.SiteMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.mission.course.entity.Site">
+        <id column="site_id" property="siteId" />
+        <result column="site_title" property="siteTitle" />
+        <result column="headline" property="headline" />
+        <result column="headline_img" property="headlineImg" />
+        <result column="site_status" property="siteStatus" />
+        <result column="thumb_id" property="thumbId" />
+        <result column="site_create_Time" property="createTime" />
+        <result column="site_version" property="version" />
+        <association property="thumb" column="thumb_id" resultMap="com.mission.course.dao.ThumbMapper.BaseResultMap"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        site_id, site_title, headline, headline_img, site_status, thumb_id, create_Time, version
+    </sql>
+    <sql id="T_Column_List">
+        s.site_id, s.site_title, s.headline, s.headline_img, s.site_status, s.thumb_id, s.create_Time as site_create_Time, s.version as site_version
+    </sql>
+
+    <!--逻辑删除状态必为1-->
+    <sql id="Status_Valid">
+        and  s.site_status = 1
+    </sql>
+
+    <select id="selectSiteById" resultMap="BaseResultMap">
+        select
+        <include refid="T_Column_List"/>
+        ,
+        <include refid="com.mission.course.dao.ThumbMapper.T_Column_List"/>
+        from tb_site s,tb_thumb t
+        where s.thumb_id =t.thumb_id
+          and s.site_id = #{id}
+        <include refid="Status_Valid"/>
+
+    </select>
+
+</mapper>
